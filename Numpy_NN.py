@@ -11,6 +11,9 @@ import random
 def load_data(path=None):
     f = np.loadtxt(path+'digitstrain.txt', delimiter = ',')
     data = pd.DataFrame(f)
+    data = data.replace(0.000, int(0))        
+    data = data.loc[:, (data != 0).any(axis=0)]
+           
     x = data.iloc[:, :-1]
     y = data.iloc[:, -1]
     return np.array(x), np.array(y)
@@ -48,7 +51,7 @@ def initialize_parameters(layer_dim):
         parameters["b"+str(l)] = np.random.randn(layer_dim[l], 1)*0.1
     return parameters
 
-parameters = initialize_parameters(layer_dim = [784, 50, 20, 10])
+parameters = initialize_parameters(layer_dim = [659, 150, 10])
 
 def linear_forward(inputs, W, b):
     cache1 = []    
@@ -142,11 +145,11 @@ parameters = update_parameters(parameters, grads, lr = 0.001)
 
 
 
-for i in range(50):
+for i in range(25):
     prediction, caches = forward_propagation(X, parameters)    
     print(cost_function(prediction.T, one_hot_target))
     grads = L_model_backward(prediction, one_hot_target, caches)
-    parameters = update_parameters(parameters, grads, lr=0.001)
+    parameters = update_parameters(parameters, grads, lr=0.0001)
 
     
     prediction_final, cah = forward_propagation(X, parameters)
@@ -163,7 +166,8 @@ for i in range(50):
             counter += 1
     accuracy = 100*counter/Y.shape[0]
     print(accuracy)
-
+#79.16% accuracy at epoch 23
+    
 
 
 
